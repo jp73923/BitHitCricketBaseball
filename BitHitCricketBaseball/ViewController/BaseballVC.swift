@@ -46,6 +46,11 @@ class BaseballVC: UIViewController {
     //MARK: - View Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         self.clearAllArr()
         self.callPastAPI()
     }
@@ -467,10 +472,12 @@ extension BaseballVC:UITableViewDataSource,UITableViewDelegate {
         if self.btnTab.isSelected == false{
             let vc = loadVC(strStoryboardId: SB_MAIN, strVCId: idUpcomingMatchDetailsVC) as! UpcomingMatchDetailsVC
             vc.objMatchData = objMatchData
+            vc.isCricket = false
             APP_DELEGATE.appNavigation?.pushViewController(vc, animated: true)
         } else {
             let vc = loadVC(strStoryboardId: SB_MAIN, strVCId: idPastMatchDetailsVC) as! PastMatchDetailsVC
             vc.objMatchData = objMatchData
+            vc.isCricket = false
             APP_DELEGATE.appNavigation?.pushViewController(vc, animated: true)
         }
     }

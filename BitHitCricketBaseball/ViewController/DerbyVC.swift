@@ -25,17 +25,19 @@ class DerbyVC: UIViewController {
     var objMatch = [String:Any]()
     var arrFilterMatches = [[String:Any]]()
     var arrFilterDerbyList = [String]()
+    var isCricket = false
 
     //MARK: - View Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        var cric = isCricket ? "cricket/" : "baseball/"
         if let homeTeam = objMatch["home"] as? [String:Any] {
             self.lblTeam1.text = homeTeam["name"] as? String ?? ""
-            self.imgTeam1.sd_setImage(with: URL.init(string: "https://spoyer.com/api/team_img/cricket/" + "\(homeTeam["id"] as? String ?? "")" + ".png"), placeholderImage: UIImage.init(named: "ic_team1_placeholder-1"))
+            self.imgTeam1.sd_setImage(with: URL.init(string: "https://spoyer.com/api/team_img/" + cric + "\(homeTeam["id"] as? String ?? "")" + ".png"), placeholderImage: UIImage.init(named: "ic_team1_placeholder-1"))
         }
         if let awayTeam = objMatch["away"] as? [String:Any] {
             self.lblTeam2.text = awayTeam["name"] as? String ?? ""
-            self.imgTeam2.sd_setImage(with: URL.init(string: "https://spoyer.com/api/team_img/cricket/" + "\(awayTeam["id"] as? String ?? "")" + ".png"), placeholderImage: UIImage.init(named: "ic_team2_placeholder"))
+            self.imgTeam2.sd_setImage(with: URL.init(string: "https://spoyer.com/api/team_img/" + cric + "\(awayTeam["id"] as? String ?? "")" + ".png"), placeholderImage: UIImage.init(named: "ic_team2_placeholder"))
 
         }
         if let startTimestamp = Int(objMatch["time"] as? String ?? "") {

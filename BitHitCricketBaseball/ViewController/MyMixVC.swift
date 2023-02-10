@@ -42,7 +42,7 @@ class MyMixVC: UIViewController {
     }
     @IBAction func btnCalendarAction(_ sender: UIButton) {
         let userDefaults = UserDefaults.standard
-        if let arr = userDefaults.value(forKey: UD_IdFavourite) as? [String]{
+        if let arr = userDefaults.value(forKey: UD_IdFavourite) as? [String], arr.count > 0 {
             var array = [String]()
             array = arr
             if let gameId = arr[sender.tag] as? String {
@@ -51,6 +51,20 @@ class MyMixVC: UIViewController {
                     if let arr = UserDefaultManager.getCustomArrayFromUserDefaults(key: UD_Favourite) as? NSMutableArray, arr.count > 0 {
                         arr.removeObject(at: index)
                         UserDefaultManager.setCustomArrayToUserDefaults(array: arr, key: UD_Favourite)
+                    }
+                }
+                userDefaults.set(array, forKey: UD_IdFavourite)
+            }
+        }
+        if let arr1 = userDefaults.value(forKey: UD_SoonIdFavourite) as? [String], arr1.count > 0 {
+            var array = [String]()
+            array = arr1
+            if let gameId = arr1[sender.tag] as? String {
+                if let index = array.index(of: gameId) {
+                    array.remove(at: index)
+                    if let arr = UserDefaultManager.getCustomArrayFromUserDefaults(key: UD_SoonFavourite) as? NSMutableArray, arr.count > 0 {
+                        arr.removeObject(at: index)
+                        UserDefaultManager.setCustomArrayToUserDefaults(array: arr, key: UD_SoonFavourite)
                     }
                 }
                 userDefaults.set(array, forKey: UD_IdFavourite)

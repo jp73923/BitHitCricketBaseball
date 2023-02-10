@@ -498,10 +498,12 @@ extension CricketVC:UITableViewDataSource,UITableViewDelegate {
         if self.btnTab.isSelected {
             let vc = loadVC(strStoryboardId: SB_MAIN, strVCId: idPastMatchDetailsVC) as! PastMatchDetailsVC
             vc.objMatchData = objMatchData
+            vc.isCricket = true
             APP_DELEGATE.appNavigation?.pushViewController(vc, animated: true)
         } else {
             let vc = loadVC(strStoryboardId: SB_MAIN, strVCId: idUpcomingMatchDetailsVC) as! UpcomingMatchDetailsVC
             vc.objMatchData = objMatchData
+            vc.isCricket = true
             APP_DELEGATE.appNavigation?.pushViewController(vc, animated: true)
         }
     }
