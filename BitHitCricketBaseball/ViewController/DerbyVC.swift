@@ -23,9 +23,8 @@ class DerbyVC: UIViewController {
     
     //MARK: - Global Variables
     var objMatch = [String:Any]()
-    var arrFilterMatches = [[String:Any]]()
-    var arrFilterDerbyList = [String]()
     var isCricket = false
+    var arrh2h = [[String:Any]]()
 
     //MARK: - View Life Cycle
     override func viewDidLoad() {
@@ -47,7 +46,9 @@ class DerbyVC: UIViewController {
             formaor.dateFormat = "hh:mm"
             self.lbTimeStack.text = formaor.string(from: NSDate(timeIntervalSince1970: TimeInterval(truncating: NSNumber(value: startTimestamp))) as Date)
         }
-        self.api_getDerbyMatches()
+        if let gameId = objMatch["game_id"] as? String {
+            self.api_getH2hMatches(gameId: gameId)
+        }
     }
     
     //MARK: - IBActions
@@ -60,7 +61,7 @@ class DerbyVC: UIViewController {
 extension DerbyVC:UITableViewDataSource,UITableViewDelegate {
     func numberOfSections(in tableView: UITableView) -> Int {
         var numOfSection: NSInteger = 0
-        if arrFilterMatches.count > 0 {
+        if arrh2h.count > 0 {
             self.tblDerby.backgroundView = nil
             numOfSection = 1
         } else {
@@ -74,32 +75,31 @@ extension DerbyVC:UITableViewDataSource,UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.arrFilterMatches.count
+        return self.arrh2h.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = self.tblDerby.dequeueReusableCell(withIdentifier: "cellDerby") as! cellDerby
-        if let objMatch =  self.arrFilterMatches[indexPath.row] as? [String:Any] {
-            if let homeTeam = objMatch["homeTeam"] as? [String:Any] {
-                cell.imgTeam1.sd_setImage(with: URL.init(string: "https://api.sofascore.com/api/v1/team/" + "\((homeTeam["id"] as? NSNumber ?? 0))" + "/image"), placeholderImage: UIImage.init(named: "ic_placholderTop"))
+        if let dict = self.arrh2h[indexPath.row] as? [String:Any] {
+            cell.lblScore.text = dict["ss"] as? String ?? ""
+            var cric = isCricket ? "cricket/" : "baseball/"
+            if let dictahome = dict["home"] as? [String:Any] {
+                cell.imgTeam1.sd_setImage(with: URL.init(string: "https://spoyer.com/api/team_img/" + cric + "\(dictahome["id"] as? String ?? "")" + ".png"), placeholderImage: UIImage.init(named: "ic_team1_placeholder-1"))
             }
-            if let awayTeam = objMatch["awayTeam"] as? [String:Any] {
-                cell.imgTeam2.sd_setImage(with: URL.init(string: "https://api.sofascore.com/api/v1/team/" + "\((awayTeam["id"] as? NSNumber ?? 0))" + "/image"), placeholderImage: UIImage.init(named: "ic_placholderTop"))
+            if let dictaway = dict["away"] as? [String:Any] {
+                cell.imgTeam2.sd_setImage(with: URL.init(string: "https://spoyer.com/api/team_img/" + cric + "\(dictaway["id"] as? String ?? "")" + ".png"), placeholderImage: UIImage.init(named: "ic_team2_placeholder"))
             }
-            if let homeScore = objMatch["homeScore"] as? [String:Any] {
-                if let awayScore = objMatch["awayScore"] as? [String:Any] {
-                    cell.lblScore.text = "\(homeScore["normaltime"] as? NSNumber ?? 0)" + " : " + "\(awayScore["normaltime"] as? NSNumber ?? 0)"
-                }
-            }
+            return cell
         }
         return cell
     }
 }
-//MARK: - API Calling
+//MARK: - API Calling Methods
 extension DerbyVC {
-    func api_getDerbyMatches() {
+    func api_getH2hMatches(gameId:String) {
         showLoaderHUD()
-        let url = URL(string: "https://api.sofascore.com/mobile/v4/unique-tournament/\(APP_DELEGATE.id)/season/\(APP_DELEGATE.seasonId)/events")
+        let urlString = "https://spoyer.com/api/en/get.php?login=ayna&token=12784-OhJLY5mb3BSOx0O&task=h2h&game_id=" + gameId
+        let url = URL(string: urlString)
         var request = URLRequest(url: url!)
         request.httpMethod = "GET"
         
@@ -111,29 +111,14 @@ extension DerbyVC {
                 print(error ?? "")
             } else {
                 do {
-                    let parsedDictionary = try JSONSerialization.jsonObject(with: data!) as! [String:AnyObject]
+                    let parsedDictionaryArray = try JSONSerialization.jsonObject(with: data!) as! [String:AnyObject]
                     DispatchQueue.main.async {
-                        if let dictData = parsedDictionary as? [String:Any] {
-                            if let arrTournamaents = dictData["tournaments"] as? [[String:Any]] {
-                                if let dict = arrTournamaents[0] as? [String:Any] {
-                                    if let arrEvents = dict["events"] as? [[String:Any]] {
-                                        self.arrFilterMatches.removeAll()
-                                        for i in 0 ..< arrEvents.count {
-                                            if let objMatch =  arrEvents[i] as? [String:Any] {
-                                                if let status = objMatch["status"] as? [String:Any] {
-                                                    if let type = status["type"] as? String {
-                                                        if type == "finished" {
-                                                            if self.arrFilterDerbyList.contains("\(objMatch["id"] as? NSNumber ?? 0)"){
-                                                                 self.arrFilterMatches.append(objMatch)
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        self.tblDerby.reloadData()
-                                    }
+                        if let dictData = parsedDictionaryArray as? [String:Any] {
+                            if let results = dictData["results"] as? [String:Any] {
+                                if let h2h = results["h2h"] as? [[String:Any]] {
+                                    self.arrh2h = h2h
                                 }
+                                self.tblDerby.reloadData()
                             }
                         }
                     }

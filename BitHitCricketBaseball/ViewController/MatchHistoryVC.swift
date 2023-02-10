@@ -9,7 +9,6 @@ import UIKit
 class cellMatchHistory:UITableViewCell {
     //MARK: - IBOutlets
     @IBOutlet weak var lblScore: UILabel!
-    @IBOutlet weak var lblScore2: UILabel!
     @IBOutlet weak var lblTeam1: UILabel!
     @IBOutlet weak var lblTeam2: UILabel!
     @IBOutlet weak var imgTeam1: UIImageView!
@@ -17,7 +16,6 @@ class cellMatchHistory:UITableViewCell {
 }
 class MatchHistoryVC: UIViewController {
     //MARK: - IBOutlets
-    @IBOutlet weak var tblHistory: UITableView!
     @IBOutlet weak var imgTeam1: UIImageView!
     @IBOutlet weak var imgTeam2: UIImageView!
     @IBOutlet weak var lblTeam1: UILabel!
@@ -62,30 +60,41 @@ class MatchHistoryVC: UIViewController {
         APP_DELEGATE.appNavigation?.popViewController(animated: true)
     }
 }
-//MARK: - UITableViewDataSource,UITableViewDelegate
+//MARK: - UICollectionViewDelegate,UICollectionViewDataSource
 extension MatchHistoryVC:UITableViewDataSource,UITableViewDelegate {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        var numOfSection: NSInteger = 0
+        if arrh2h.count > 0 {
+            self.tblH2H.backgroundView = nil
+            numOfSection = 1
+        } else {
+            let noDataLabel: UILabel = UILabel(frame: CGRect.init(x: 0, y: 0, width: self.tblH2H.bounds.size.width, height: self.tblH2H.bounds.size.height))
+            noDataLabel.text = "No match history found"
+            noDataLabel.textColor = UIColor.white
+            noDataLabel.textAlignment = NSTextAlignment.center
+            self.tblH2H.backgroundView = noDataLabel
+        }
+        return numOfSection
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.arrh2h.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = self.tblHistory.dequeueReusableCell(withIdentifier: "cellMatchHistory") as! cellMatchHistory
+        let cell = self.tblH2H.dequeueReusableCell(withIdentifier: "cellMatchHistory") as! cellMatchHistory
         if let dict = self.arrh2h[indexPath.row] as? [String:Any] {
             cell.lblScore.text = dict["ss"] as? String ?? ""
-            if let dictHome = dict["home"] as? [String:Any] {
-                if let img1 = dictHome["id"] as? String {
-                    cell.lblTeam2.text = dictHome["name"] as? String ?? ""
-                    cell.imgTeam1.sd_setImage(with: NSURL.init(string: String.init(format: "https://spoyer.com/api/team_img/cricket/%@.png", img1)) as URL?, placeholderImage: UIImage.init(named: "ic_team1_placeholder-1"))
-                }
+            var cric = isCricket ? "cricket/" : "baseball/"
+            if let dictahome = dict["home"] as? [String:Any] {
+                cell.lblTeam1.text = dictahome["name"] as? String ?? ""
+                cell.imgTeam1.sd_setImage(with: URL.init(string: "https://spoyer.com/api/team_img/" + cric + "\(dictahome["id"] as? String ?? "")" + ".png"), placeholderImage: UIImage.init(named: "ic_team1_placeholder-1"))
             }
             if let dictaway = dict["away"] as? [String:Any] {
-                if let img1 = dictaway["id"] as? String {
-                    cell.lblTeam2.text = dictaway["name"] as? String ?? ""
-                    cell.imgTeam2.sd_setImage(with: NSURL.init(string: String.init(format: "https://spoyer.com/api/team_img/cricket/%@.png", img1)) as URL?, placeholderImage: UIImage.init(named: "ic_team2_placeholder"))
-                }
+                cell.lblTeam2.text = dictaway["name"] as? String ?? ""
+                cell.imgTeam2.sd_setImage(with: URL.init(string: "https://spoyer.com/api/team_img/" + cric + "\(dictaway["id"] as? String ?? "")" + ".png"), placeholderImage: UIImage.init(named: "ic_team2_placeholder"))
             }
-            cell.lblScore.text = (dict["ss"] as? String ?? "").components(separatedBy: "-")[0]
-            cell.lblScore2.text = (dict["ss"] as? String ?? "").components(separatedBy: "-")[1]
+            return cell
         }
         return cell
     }
@@ -112,7 +121,7 @@ extension MatchHistoryVC {
                     DispatchQueue.main.async {
                         if let dictData = parsedDictionaryArray as? [String:Any] {
                             if let results = dictData["results"] as? [String:Any] {
-                                if let h2h = results["h2h"] as? [[String:Any]] {
+                                if let h2h = results["home"] as? [[String:Any]] {
                                     self.arrh2h = h2h
                                 }
                                 self.tblH2H.reloadData()
