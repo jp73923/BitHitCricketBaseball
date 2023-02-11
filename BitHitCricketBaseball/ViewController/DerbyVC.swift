@@ -20,7 +20,8 @@ class DerbyVC: UIViewController {
     @IBOutlet weak var lblTeam2: UILabel!
     @IBOutlet weak var lblDateStack: UILabel!
     @IBOutlet weak var lbTimeStack: UILabel!
-    
+    @IBOutlet weak var imgBG: UIImageView!
+
     //MARK: - Global Variables
     var objMatch = [String:Any]()
     var isCricket = false
@@ -29,6 +30,7 @@ class DerbyVC: UIViewController {
     //MARK: - View Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.imgBG.image = UIImage.init(named: isCricket ? "ic_bg_cricket" : "ic_bg_baseball")
         var cric = isCricket ? "cricket/" : "baseball/"
         if let homeTeam = objMatch["home"] as? [String:Any] {
             self.lblTeam1.text = homeTeam["name"] as? String ?? ""

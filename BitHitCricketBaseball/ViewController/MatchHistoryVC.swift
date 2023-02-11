@@ -23,7 +23,8 @@ class MatchHistoryVC: UIViewController {
     @IBOutlet weak var lblDateStack: UILabel!
     @IBOutlet weak var lbTimeStack: UILabel!
     @IBOutlet weak var tblH2H: UITableView!
-    
+    @IBOutlet weak var imgBG: UIImageView!
+
     //MARK: - Global Variables
     var objMatch = [String:Any]()
     var arrh2h = [[String:Any]]()
@@ -33,6 +34,7 @@ class MatchHistoryVC: UIViewController {
     //MARK: - View Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.imgBG.image = UIImage.init(named: isCricket ? "ic_bg_cricket" : "ic_bg_baseball")
         var cric = isCricket ? "cricket/" : "baseball/"
         if let homeTeam = objMatch["home"] as? [String:Any] {
             self.lblTeam1.text = homeTeam["name"] as? String ?? ""
@@ -93,6 +95,18 @@ extension MatchHistoryVC:UITableViewDataSource,UITableViewDelegate {
             if let dictaway = dict["away"] as? [String:Any] {
                 cell.lblTeam2.text = dictaway["name"] as? String ?? ""
                 cell.imgTeam2.sd_setImage(with: URL.init(string: "https://spoyer.com/api/team_img/" + cric + "\(dictaway["id"] as? String ?? "")" + ".png"), placeholderImage: UIImage.init(named: "ic_team2_placeholder"))
+            }
+            let score1full = (dict["ss"] as? String ?? "").components(separatedBy: "-")[0]
+            let score2full = (dict["ss"] as? String ?? "").components(separatedBy: "-")[1]
+            let score1 = score1full.components(separatedBy: "/")[0]
+            let score2 = score2full.components(separatedBy: "/")[0]
+
+            if score1 > score2 {
+                cell.lblScore.textColor = UIColor.green
+            } else if score1 < score2 {
+                cell.lblScore.textColor = UIColor.red
+            } else {
+                cell.lblScore.textColor = UIColor.yellow
             }
             return cell
         }

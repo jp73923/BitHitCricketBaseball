@@ -1289,6 +1289,7 @@
                     </view>
                     <tabBarItem key="tabBarItem" title="CRICKET" image="ic_cricket" selectedImage="ic_cricket" id="Mku-Si-Ena"/>
                     <connections>
+                        <outlet property="imgBG" destination="Qsa-eM-qwX" id="gj6-4j-nFT"/>
                         <outlet property="imgTeam1" destination="ydk-a0-xRO" id="HaH-0L-AAz"/>
                         <outlet property="imgTeam2" destination="bgZ-EE-i6b" id="ADQ-mo-JTP"/>
                         <outlet property="lblCapacity" destination="vZJ-GB-71v" id="Lp1-eU-R4Z"/>
@@ -1553,6 +1554,7 @@
                     </view>
                     <tabBarItem key="tabBarItem" title="CRICKET" image="ic_cricket" selectedImage="ic_cricket" id="Yq3-MT-TXK"/>
                     <connections>
+                        <outlet property="imgBG" destination="qRy-7x-UdJ" id="JQv-XB-jBW"/>
                         <outlet property="imgTeam1" destination="eh9-ik-5K4" id="2ue-qe-UKX"/>
                         <outlet property="imgTeam2" destination="SIv-Mi-93j" id="h8o-kB-xxu"/>
                         <outlet property="lbTimeStack" destination="GLI-D8-k8G" id="pLX-Mn-K7E"/>
@@ -1987,6 +1989,7 @@
                     </view>
                     <tabBarItem key="tabBarItem" title="CRICKET" image="ic_cricket" selectedImage="ic_cricket" id="Str-xa-3Sa"/>
                     <connections>
+                        <outlet property="imgBG" destination="AXw-Tq-j3L" id="hQX-hi-mOz"/>
                         <outlet property="imgTeam1" destination="kXt-Ay-U5x" id="Rmm-VS-b8n"/>
                         <outlet property="imgTeam2" destination="4vb-9r-9GW" id="6jD-Sn-AGm"/>
                         <outlet property="lblCapacity" destination="l3d-Jz-OLf" id="Oep-2a-7WW"/>
@@ -2286,6 +2289,7 @@
                     </view>
                     <tabBarItem key="tabBarItem" title="CRICKET" image="ic_cricket" selectedImage="ic_cricket" id="qAo-DE-X11"/>
                     <connections>
+                        <outlet property="imgBG" destination="EA0-TS-tw5" id="0ab-dK-Wvt"/>
                         <outlet property="imgTeam1" destination="0Ol-fE-h22" id="dIw-Cd-j1a"/>
                         <outlet property="imgTeam2" destination="PrU-4E-5da" id="yZa-AO-hkb"/>
                         <outlet property="lbTimeStack" destination="08O-nd-Qn1" id="RBx-sD-OMs"/>

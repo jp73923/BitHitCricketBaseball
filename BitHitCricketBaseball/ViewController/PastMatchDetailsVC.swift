@@ -22,7 +22,8 @@ class PastMatchDetailsVC: UIViewController {
     @IBOutlet weak var lblCity: UILabel!
     @IBOutlet weak var lblCountry: UILabel!
     @IBOutlet weak var lblHomeManager: UILabel!
-    
+    @IBOutlet weak var imgBG: UIImageView!
+
     //MARK: - Global Variables
     var objMatchData = [String:Any]()
     var isCricket = false
@@ -30,6 +31,7 @@ class PastMatchDetailsVC: UIViewController {
     //MARK: - View Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.imgBG.image = UIImage.init(named: isCricket ? "ic_bg_cricket" : "ic_bg_baseball")
         var cric = isCricket ? "cricket/" : "baseball/"
         if let objMatch = objMatchData as? [String:Any] {
             if let homeTeam = objMatch["home"] as? [String:Any] {
